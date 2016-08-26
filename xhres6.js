@@ -16,11 +16,12 @@ class xhres6 {
 			url:'/',
 			return_xhr:false,
 			timeout:60000,
-			files:[]
+			files:[],
+			outside_data:{}
 		}
 		
 		this.version = '1.0.0';
-		
+
 		if(_options && typeof(_options) === 'object'){
 			this.options = Object.assign({}, this.d_options, _options);
 			return this.request();
@@ -29,11 +30,26 @@ class xhres6 {
 		}
 	}
 	
+	buildParamsAsQueryString(params){
+		const queryString = [];
+
+		for (const p in params) {
+			if (params.hasOwnProperty(p)) {
+				queryString.push(`${p}=${params[p]}`);
+			}
+		}
+
+		return queryString.length > 0 ? `?${queryString.join('&')}` : '';
+	}
+	
 	request(){
 
 		if(this.options.data_type != 'raw' && this.options.data_type != 'form-data' && this.options.data_type!= 'json' ){
 			console.warn('invalidate data_type value, I will use default (json) \n data_type = [form-data | json]');
 			this.options.data_type = 'raw';
+		}
+		if(this.options.method == 'GET'){
+			this.options.url += this.buildParamsAsQueryString(this.options.data);
 		}
 		
 		const { url, method, timeout, async, data, headers, return_xhr, form_data, files, data_type } = this.options;
@@ -91,18 +107,15 @@ class xhres6 {
 			xhr.onreadystatechange = () => {
 				if(xhr.readyState !== 4) return;
 				let rptext = typeof(xhr.responseText) === 'string' && xhr.responseText!=='' ? JSON.parse(xhr.responseText) : xhr.responseText;
-				rptext = Object.assign({}, { body : rptext }, { xhr_status : xhr.status});
-				return resolve(rptext);
-// 				switch(xhr.status){
-// 					case 200:
-// 						return resolve(rptext);
-// 						break;
-// 					case 401:
-// 						return resolve(rptext);
-// 						break;
-// 					default:
-// 						throw new Error('status error unknow status code');
+// 				const headerdatas = ['p', 'listRows', 'realListRows', 'count', 'Content-Length'];
+// 				let headers = {};
+// 				for(let i = 0; i<headerdatas.length; i++){
+// 					if(xhr.getResponseHeader(headerdatas[i]) !== null ){
+// 						headers[headerdatas[i]]= xhr.getResponseHeader(headerdatas[i]);
+// 					}
 // 				}
+				rptext = Object.assign({}, { body : rptext, xhr_status : xhr.status, outside_data:this.options.outside_data});
+				return resolve(rptext);
 			}
 		})
 		
@@ -117,6 +130,12 @@ class xhres6 {
 	
 	post(_url = '', _options = {}){
 		this.options = Object.assign({}, this.d_options, _options, {url:_url, method:'POST'});
+		
+		return this.request();
+	}
+	
+	put(_url = '', _options = {}){
+		this.options = Object.assign({}, this.d_options, _options, {url:_url, method:'PUT'});
 		
 		return this.request();
 	}
