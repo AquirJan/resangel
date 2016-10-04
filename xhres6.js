@@ -1,7 +1,7 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 8-7-2016
+// last modify at 9-21-2016
 
 class xhres6 {
 
@@ -15,7 +15,7 @@ class xhres6 {
 			async:true,
 			url:'/',
 			return_xhr:false,
-			timeout:60000,
+			timeout:10000,
 			files:[],
 			outside_data:{}
 		}
@@ -106,15 +106,19 @@ class xhres6 {
 		const xhrPromise = new Promise( (resolve, reject) => {
 			xhr.onreadystatechange = () => {
 				if(xhr.readyState !== 4) return;
+				if(xhr.status==0){
+					return reject({xhr_status:xhr.status, info:"timeout", xhr:xhr});
+				}
 				let rptext = typeof(xhr.responseText) === 'string' && xhr.responseText!=='' ? JSON.parse(xhr.responseText) : xhr.responseText;
-// 				const headerdatas = ['p', 'listRows', 'realListRows', 'count', 'Content-Length'];
-// 				let headers = {};
-// 				for(let i = 0; i<headerdatas.length; i++){
-// 					if(xhr.getResponseHeader(headerdatas[i]) !== null ){
-// 						headers[headerdatas[i]]= xhr.getResponseHeader(headerdatas[i]);
-// 					}
-// 				}
-				rptext = Object.assign({}, { body : rptext, xhr_status : xhr.status, outside_data:this.options.outside_data});
+				const headerdatas = ['p', 'listRows', 'realListRows', 'count', 'Content-Length'];
+				let headers = {};
+				for(let i = 0; i<headerdatas.length; i++){
+					if(xhr.getResponseHeader(headerdatas[i]) !== null ){
+						headers[headerdatas[i]]= xhr.getResponseHeader(headerdatas[i]);
+					}
+				}
+				
+				rptext = Object.assign({}, { headers: headers, body : rptext, xhr_status : xhr.status, outside_data:this.options.outside_data});
 				return resolve(rptext);
 			}
 		})
