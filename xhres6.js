@@ -1,7 +1,7 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 9-21-2016
+// last modify at 11-9-2016
 
 class xhres6 {
 
@@ -81,8 +81,11 @@ class xhres6 {
 						return console.log('Error : no FormData support');
 					}
 					const formData = new FormData();
-					formData.append('uploads', files);
-					formData.append('datas', JSON.stringify(data));
+					for(let key in data){
+						if (data.hasOwnProperty(key)) {
+							formData.append(key, data[key]);
+						}
+					}
 					xhr.send(formData);
 					break;
 				case 'raw':
@@ -118,7 +121,7 @@ class xhres6 {
 					}
 				}
 				
-				rptext = Object.assign({}, { headers: headers, body : rptext, xhr_status : xhr.status, outside_data:this.options.outside_data});
+				rptext = Object.assign({}, { headers: headers, body : rptext, xhr_status : xhr.status, xhr:xhr, outside_data:this.options.outside_data});
 				return resolve(rptext);
 			}
 		})
