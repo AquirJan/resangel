@@ -1,7 +1,7 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 11-9-2016
+// last modify at 11-17-2016
 
 class xhres6 {
 
@@ -113,15 +113,14 @@ class xhres6 {
 					return reject({xhr_status:xhr.status, info:"timeout", xhr:xhr});
 				}
 				let rptext = typeof(xhr.responseText) === 'string' && xhr.responseText!=='' ? JSON.parse(xhr.responseText) : xhr.responseText;
-				const headerdatas = ['p', 'listRows', 'realListRows', 'count', 'Content-Length'];
-				let headers = {};
-				for(let i = 0; i<headerdatas.length; i++){
-					if(xhr.getResponseHeader(headerdatas[i]) !== null ){
-						headers[headerdatas[i]]= xhr.getResponseHeader(headerdatas[i]);
-					}
+				const header_array = xhr.getAllResponseHeaders().toLowerCase().replace(/\n/g,'||').replace(/\|\|$/,'').split('||');
+				let headers_obj = {};
+				for(let i=0;i<header_array.length;i++){
+					const obj_item = header_array[i].split(": ");
+					headers_obj[obj_item[0]] = obj_item[1];
 				}
 				
-				rptext = Object.assign({}, { headers: headers, body : rptext, xhr_status : xhr.status, xhr:xhr, outside_data:this.options.outside_data});
+				rptext = Object.assign({}, { headers: headers_obj, body : rptext, xhr_status : xhr.status, xhr:xhr, outside_data:this.options.outside_data});
 				return resolve(rptext);
 			}
 		})
