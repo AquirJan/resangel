@@ -1,7 +1,7 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 11-17-2016
+// last modify at 11-30-2016
 
 class xhres6 {
 
@@ -77,16 +77,16 @@ class xhres6 {
 		}else{
 			switch(data_type){
 				case 'form-data':
-					if(!window.FormData){
-						return console.log('Error : no FormData support');
-					}
-					const formData = new FormData();
-					for(let key in data){
-						if (data.hasOwnProperty(key)) {
-							formData.append(key, data[key]);
-						}
-					}
-					xhr.send(formData);
+// 					if(!window.FormData){
+// 						return console.log('Error : no FormData support');
+// 					}
+// 					const formData = new FormData();
+// 					for(let key in data){
+// 						if (data.hasOwnProperty(key)) {
+// 							formData.append(key, data[key]);
+// 						}
+// 					}
+					xhr.send(data);
 					break;
 				case 'raw':
 // 					console.log('raw');
