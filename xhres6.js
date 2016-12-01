@@ -17,7 +17,7 @@ class xhres6 {
 			url:'/',
 			return_xhr:false,
 			timeout:10000,
-			files:[],
+// 			files:[],
 			outside_data:{}
 		}
 		
@@ -77,7 +77,7 @@ class xhres6 {
 			this.options.url += this.buildParamsAsQueryString(this.options.data);
 		}
 		
-		const { url, method, timeout, async, data, headers, return_xhr, form_data, files, data_type } = this.options;
+		const { url, method, timeout, async, data, headers, return_xhr, form_data, data_type } = this.options;
 
 		const xhr = new XMLHttpRequest();
 		xhr.open(method, url, async);
