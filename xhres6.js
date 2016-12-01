@@ -1,7 +1,8 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 11-30-2016
+// last modify at 12-1-2016
+// version 1.0.5;
 
 class xhres6 {
 
@@ -20,7 +21,7 @@ class xhres6 {
 			outside_data:{}
 		}
 		
-		this.version = '1.0.0';
+		this.version = '1.0.5';
 
 		if(_options && typeof(_options) === 'object'){
 			this.options = Object.assign({}, this.d_options, _options);
@@ -32,13 +33,19 @@ class xhres6 {
 	
 	buildParamsAsQueryString(params){
 		const queryString = [];
-
+		
 		for (const p in params) {
 			if (params.hasOwnProperty(p)) {
-				queryString.push(`${p}=${params[p]}`);
+				if(Array.isArray(params[p])){
+					params[p].forEach((value, key)=>{
+						queryString.push(`${p}=${value}`);
+					})
+				}else{
+					queryString.push(`${p}=${params[p]}`);
+				}
 			}
 		}
-
+		console.log(queryString);
 		return queryString.length > 0 ? `?${queryString.join('&')}` : '';
 	}
 	
@@ -49,6 +56,24 @@ class xhres6 {
 			this.options.data_type = 'raw';
 		}
 		if(this.options.method == 'GET'){
+			const reg = /(\[)(.*)(\])/;
+			for(const key in this.options.data){
+				if(this.options.data.hasOwnProperty(key) && reg.test(key)){
+					let tmp_key = key;
+					tmp_key = tmp_key.replace(reg, function(){
+						if(arguments[1] == '['){
+							arguments[1] = encodeURI('[');
+						}
+						if(arguments[3] == ']'){
+							arguments[3] = encodeURI(']');
+						}
+						return arguments[1]+arguments[2]+arguments[3];
+					})
+					this.options.data[tmp_key] = this.options.data[key];
+					delete this.options.data[key];
+				}
+			}
+			
 			this.options.url += this.buildParamsAsQueryString(this.options.data);
 		}
 		
@@ -77,19 +102,9 @@ class xhres6 {
 		}else{
 			switch(data_type){
 				case 'form-data':
-// 					if(!window.FormData){
-// 						return console.log('Error : no FormData support');
-// 					}
-// 					const formData = new FormData();
-// 					for(let key in data){
-// 						if (data.hasOwnProperty(key)) {
-// 							formData.append(key, data[key]);
-// 						}
-// 					}
 					xhr.send(data);
 					break;
 				case 'raw':
-// 					console.log('raw');
 					xhr.send(JSON.stringify(data));
 					break;
 				case 'json':
