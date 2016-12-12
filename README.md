@@ -30,6 +30,42 @@ xhr.get('/Api/getArray').then(function(_rpdata){
 
 ```
 
+compress image canvas method
+
+```sh
+<input type="file" id="files" onchange="picOnchange(this)"/>
+function picOnchange(e){
+// 				console.dir(e.files);
+	try{
+		var _thise = e;
+		var files = e.files;
+		var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+		var srcimg = new Image();
+		var quality = 0.5;
+		var tmp_srcimgdata = URL.createObjectURL(files[0]);
+		srcimg.src = tmp_srcimgdata;
+		srcimg.onload = function(){
+			var destimg = new Image();
+			canvas.width = srcimg.width;
+			canvas.height = srcimg.height;
+			ctx.drawImage(srcimg, 0, 0, srcimg.width, srcimg.height, 0, 0, srcimg.width, srcimg.height);
+			var dataUrl = canvas.toDataURL(files[0].type, quality);
+// 					console.log(dataUrl);
+			destimg.src = dataUrl;
+			destimg.title = 'preview image';
+			document.body.appendChild(destimg);
+			_thise.value = '';
+		}
+	}catch(e){
+		alert("your browser doesn't support canvas");
+	}
+	
+	
+}
+
+```
+
 form-data demo
 
 ```sh
