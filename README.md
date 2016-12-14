@@ -22,6 +22,8 @@ simple demo
 ```sh
 const xhr = new xhres6;
 
+// xhr.xhr can get XMLHttpRequest handler
+
 xhr.get('/Api/getArray').then(function(_rpdata){
 	console.log(_rpdata);
 	const { headers, body, xhr_status, xhr} = _rpdata;

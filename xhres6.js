@@ -1,8 +1,9 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 12-1-2016
-// version 1.0.5;
+// last modify at 12-14-2016
+// version 1.0.6;
+// commit : change xhr handler in this
 
 class xhres6 {
 
@@ -15,14 +16,17 @@ class xhres6 {
 			data_type:'raw',
 			async:true,
 			url:'/',
-			return_xhr:false,
+// 			return_xhr:false,
 			timeout:10000,
+			
 // 			files:[],
 			outside_data:{}
 		}
 		
-		this.version = '1.0.5';
-
+		this.version = '1.0.6';
+		
+		this.xhr=new XMLHttpRequest();
+		
 		if(_options && typeof(_options) === 'object'){
 			this.options = Object.assign({}, this.d_options, _options);
 			return this.request();
@@ -77,9 +81,10 @@ class xhres6 {
 			this.options.url += this.buildParamsAsQueryString(this.options.data);
 		}
 		
-		const { url, method, timeout, async, data, headers, return_xhr, form_data, data_type } = this.options;
-
-		const xhr = new XMLHttpRequest();
+		const { url, method, timeout, async, data, headers, form_data, data_type } = this.options;
+			
+		const xhr = this.xhr;
+		
 		xhr.open(method, url, async);
 		if(data_type == 'json' || data_type == 'raw' ){
 			xhr.setRequestHeader('Accept', 'application/json');
@@ -115,17 +120,11 @@ class xhres6 {
 			}
 		}
 		
-		
-		
-		if(return_xhr){
-			return xhr;
-		}
-		
 		const xhrPromise = new Promise( (resolve, reject) => {
 			xhr.onreadystatechange = () => {
 				if(xhr.readyState !== 4) return;
 				if(xhr.status==0){
-					return reject({xhr_status:xhr.status, info:"timeout", xhr:xhr});
+					return reject({xhr_status:xhr.status, info:"timeout"});
 				}
 				let rptext = typeof(xhr.responseText) === 'string' && xhr.responseText!=='' ? JSON.parse(xhr.responseText) : xhr.responseText;
 				const header_array = xhr.getAllResponseHeaders().toLowerCase().replace(/\n/g,'||').replace(/\|\|$/,'').split('||');
@@ -135,7 +134,7 @@ class xhres6 {
 					headers_obj[obj_item[0]] = obj_item[1];
 				}
 				
-				rptext = Object.assign({}, { headers: headers_obj, body : rptext, xhr_status : xhr.status, xhr:xhr, outside_data:this.options.outside_data});
+				rptext = Object.assign({}, { headers: headers_obj, body : rptext, xhr_status : xhr.status, outside_data:this.options.outside_data});
 				return resolve(rptext);
 			}
 		})
