@@ -86,7 +86,7 @@ class xhres6 {
 		const xhr = this.xhr;
 		
 		xhr.open(method, url, async);
-		if(sendDataType == 'json' || sendDataType == 'raw' ){
+		if(sendDataType == 'json' ){
 			xhr.setRequestHeader('Accept', 'application/json');
 			xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 		}
