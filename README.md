@@ -11,11 +11,13 @@ options
 	data:{
 		'XX':'XX'
 	},
-	data_type:'raw || form-data || json', defualt 'raw'
+	sendDataType:'raw || form-data || json', defualt 'raw',
+	resDataType:"json", 
 	async:true || false, defualt true
 	url:'/',
 	timeout:10000
 ```
+** option [resDataType] now just for 'json' **
 
 simple demo
 
@@ -119,7 +121,7 @@ xhr.put('/Api',{
 	headers:{
 		token : window.localStorage.token
 	},
-	data_type:'form-data',
+	sendDataType:'form-data',
 	data:fd
 }).then(function(_rpdata){
 	console.log(_rpdata);

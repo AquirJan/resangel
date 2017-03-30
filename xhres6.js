@@ -1,9 +1,9 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 12-14-2016
-// version 1.0.6;
-// commit : change xhr handler in this
+// last modify at 3-30-2017
+// version 1.0.7;
+// commit : fix sendDataType default type;
 
 class xhres6 {
 
@@ -13,9 +13,10 @@ class xhres6 {
 			method:"POST",
 			headers:{},
 			data:{},
-			data_type:'raw',
+			sendDataType:'raw', //xhr send data type
 			async:true,
 			url:'/',
+			resDataType:'', //response data type
 // 			return_xhr:false,
 			timeout:10000,
 			
@@ -23,7 +24,7 @@ class xhres6 {
 			outside_data:{}
 		}
 		
-		this.version = '1.0.6';
+		this.version = '1.0.7';
 		
 		this.xhr=new XMLHttpRequest();
 		
@@ -49,16 +50,15 @@ class xhres6 {
 				}
 			}
 		}
-		console.log(queryString);
 		return queryString.length > 0 ? `?${queryString.join('&')}` : '';
 	}
 	
 	request(){
 
-		if(this.options.data_type != 'raw' && this.options.data_type != 'form-data' && this.options.data_type!= 'json' ){
-			console.warn('invalidate data_type value, I will use default (json) \n data_type = [form-data | json]');
-			this.options.data_type = 'raw';
-		}
+// 		if(this.options.sendDataType != 'raw' && this.options.sendDataType != 'form-data' && this.options.sendDataType!= 'json' ){
+// 			console.warn('invalidate sendDataType value, I will use default (json) \n sendDataType = [form-data | json]');
+// 			this.options.sendDataType = 'raw';
+// 		}
 		if(this.options.method == 'GET'){
 			const reg = /(\[)(.*)(\])/;
 			for(const key in this.options.data){
@@ -81,12 +81,12 @@ class xhres6 {
 			this.options.url += this.buildParamsAsQueryString(this.options.data);
 		}
 		
-		const { url, method, timeout, async, data, headers, form_data, data_type } = this.options;
+		const { url, method, timeout, async, data, headers, form_data, sendDataType } = this.options;
 			
 		const xhr = this.xhr;
 		
 		xhr.open(method, url, async);
-		if(data_type == 'json' || data_type == 'raw' ){
+		if(sendDataType == 'json' || sendDataType == 'raw' ){
 			xhr.setRequestHeader('Accept', 'application/json');
 			xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 		}
@@ -105,12 +105,12 @@ class xhres6 {
 		if(method == 'GET' || method == 'HEAD'){
 			xhr.send();
 		}else{
-			switch(data_type){
+			switch(sendDataType){
 				case 'form-data':
 					xhr.send(data);
 					break;
 				case 'raw':
-					xhr.send(JSON.stringify(data));
+					xhr.send(data);
 					break;
 				case 'json':
 					xhr.send(JSON.stringify(data));
