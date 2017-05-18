@@ -4,17 +4,17 @@ XMLHttpRequest ES6 Promise
 options
 
 ```sh
-	method:"POST || GET || HEAD || DELETE || PUT",
+	method:"POST || GET || HEAD || DELETE || PUT", default 'POST'
 	headers:{
 		'XX':'XX'
 	},
 	data:{
 		'XX':'XX'
 	},
-	sendDataType:'raw || form-data || json', defualt 'raw',
+	sendDataType:'raw || form-data || json', defualt 'json',
 	resDataType:"json", 
 	async:true || false, defualt true
-	url:'/',
+	url:'',
 	timeout:10000
 ```
 ** option [resDataType] now just for 'json' **

@@ -1,35 +1,32 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 3-30-2017
-// version 1.0.7;
-// commit : fix sendDataType default type;
+// last modify at 5-18-2017
+// version 1.0.8;
+// commit : modify the return reject position;
 
 class xhres6 {
 
 	constructor(_options){
 	
-		this.d_options = {
+		this.def_opts = {
 			method:"POST",
 			headers:{},
 			data:{},
-			sendDataType:'raw', //xhr send data type
+			sendDataType:'json', //xhr send data type
 			async:true,
-			url:'/',
+			url:'',
 			resDataType:'', //response data type
-// 			return_xhr:false,
 			timeout:10000,
-			
-// 			files:[],
 			outside_data:{}
 		}
 		
-		this.version = '1.0.7';
+		this.version = '1.0.8';
 		
 		this.xhr=new XMLHttpRequest();
 		
 		if(_options && typeof(_options) === 'object'){
-			this.options = Object.assign({}, this.d_options, _options);
+			this.options = Object.assign({}, this.def_opts, _options);
 			return this.request();
 		}else{
 			return this;
@@ -54,11 +51,6 @@ class xhres6 {
 	}
 	
 	request(){
-
-// 		if(this.options.sendDataType != 'raw' && this.options.sendDataType != 'form-data' && this.options.sendDataType!= 'json' ){
-// 			console.warn('invalidate sendDataType value, I will use default (json) \n sendDataType = [form-data | json]');
-// 			this.options.sendDataType = 'raw';
-// 		}
 		if(this.options.method == 'GET'){
 			const reg = /(\[)(.*)(\])/;
 			for(const key in this.options.data){
@@ -122,9 +114,13 @@ class xhres6 {
 		
 		const xhrPromise = new Promise( (resolve, reject) => {
 			xhr.onreadystatechange = () => {
-				if(xhr.readyState !== 4) return;
+				if(xhr.readyState !== 4){
+					reject({xhr_status:xhr.status, info:"readyState Error"});
+					return;
+				}
 				if(xhr.status==0){
-					return reject({xhr_status:xhr.status, info:"timeout"});
+					reject({xhr_status:xhr.status, info:"timeout"});
+					return;
 				}
 				let rptext = typeof(xhr.responseText) === 'string' && xhr.responseText!=='' ? JSON.parse(xhr.responseText) : xhr.responseText;
 				const header_array = xhr.getAllResponseHeaders().toLowerCase().replace(/\n/g,'||').replace(/\|\|$/,'').split('||');
@@ -135,7 +131,7 @@ class xhres6 {
 				}
 				
 				rptext = Object.assign({}, { headers: headers_obj, body : rptext, xhr_status : xhr.status, outside_data:this.options.outside_data});
-				return resolve(rptext);
+				resolve(rptext);
 			}
 		})
 		
@@ -143,25 +139,25 @@ class xhres6 {
 	}
 	
 	get(_url = '', _options = {}){
-		this.options = Object.assign({}, this.d_options, _options, {url:_url, method:'GET'});
+		this.options = Object.assign({}, this.def_opts, _options, {url:_url, method:'GET'});
 		
 		return this.request();
 	}
 	
 	post(_url = '', _options = {}){
-		this.options = Object.assign({}, this.d_options, _options, {url:_url, method:'POST'});
+		this.options = Object.assign({}, this.def_opts, _options, {url:_url, method:'POST'});
 		
 		return this.request();
 	}
 	
 	put(_url = '', _options = {}){
-		this.options = Object.assign({}, this.d_options, _options, {url:_url, method:'PUT'});
+		this.options = Object.assign({}, this.def_opts, _options, {url:_url, method:'PUT'});
 		
 		return this.request();
 	}
 	
 	delete(_url = '', _options = {}){
-		this.options = Object.assign({}, this.d_options, _options, {url:_url, method:'DELETE'});
+		this.options = Object.assign({}, this.def_opts, _options, {url:_url, method:'DELETE'});
 		
 		return this.request();
 	}
