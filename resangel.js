@@ -1,11 +1,12 @@
 // XMLHttpRequest with Promise and ES6 syntax
 // Author by AquirJan, wing.free0@gmail.com
 // create at 8-2-2016
-// last modify at 5-18-2017
-// version 1.0.8;
-// commit : modify the return reject position;
+// last modify at 6-19-2017
+// version 1.1.0;
+// commit : change project name as resangel
+// add config options method
 
-class xhres6 {
+export default class resangel {
 
 	constructor(_options){
 	
@@ -19,6 +20,11 @@ class xhres6 {
 			resDataType:'', //response data type
 			timeout:10000,
 			outside_data:{}
+		}
+
+		this.config = (_options)=>{
+			this.def_opts = Object.assign({}, this.def_opts, _options)
+			console.dir(this.def_opts);
 		}
 		
 		this.version = '1.0.8';
@@ -163,5 +169,3 @@ class xhres6 {
 	}
 	
 }
-
-export default xhres6;

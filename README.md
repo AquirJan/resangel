@@ -1,4 +1,5 @@
-# xhres6
+# resangel
+
 XMLHttpRequest ES6 Promise
 
 options
