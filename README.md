@@ -130,12 +130,3 @@ xhr.put('/Api',{
 });
 
 ```
-
-return xhr handler demo
-
-```sh
-const xhr = new xhres6;
-
-const xhrhandler = xhr.get('/Api/getArray', {return_xhr:true});
-xhrhandler.xhr
-```
